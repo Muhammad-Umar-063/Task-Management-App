@@ -42,7 +42,7 @@ const AddTask = () => {
 
             <select onChange={(e) => setstatus(e.target.value)}>
                 <option value="Active">Active</option>
-                <option value="In_Progress">In Progress</option>
+                <option value="in_progress">In Progress</option>
                 <option value="Resolved">Resolved</option>
             </select>
 

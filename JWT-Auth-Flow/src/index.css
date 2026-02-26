@@ -245,7 +245,7 @@ button + button:hover { background: rgba(59, 130, 246, 0.15); }
 .priority-low    { background: rgba(34,197,94,0.12);  color: #22c55e; }
 
 .status-active      { background: rgba(59,130,246,0.12);  color: #3b82f6; }
-.status-in-progress { background: rgba(168,85,247,0.12);  color: #a855f7; }
+.status-in_progress { background: rgba(168,85,247,0.12);  color: #a855f7; }
 .status-resolved    { background: rgba(34,197,94,0.12);   color: #22c55e; }
 
 /* ── EMPTY STATE ────────────────────────────── */
