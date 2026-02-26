@@ -21,6 +21,7 @@ const EditTask = () => {
                 setpriority(task.priority)
                 setstatus(task.status)
             }catch(err){
+                
                 alert("Failed to load task")
             }
         }

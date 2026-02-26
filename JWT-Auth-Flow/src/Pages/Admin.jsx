@@ -22,11 +22,14 @@ const Admin = () => {
         fetchAdmin()
     }, [])
     return (
+        <>
         <div className="admin">
             <h1>Admin Page</h1>
             <h3>Hello {message.username}</h3>
             <p>Role : {message.role}</p>
+            <button onClick={() => {navigate("/dashboard")}}>Go To Dashboard</button>
         </div>
+        </>
     )
 }
 export default Admin

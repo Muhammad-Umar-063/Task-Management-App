@@ -7,7 +7,6 @@ const Dashboard = () => {
     const [dashboard, setDashboard] = useState([])
     const [role, setRole] = useState("")
     const [error, setError] = useState("")
-    const [openMenu, setOpenMenu] = useState(null)
     const [selectedTask, setSelectedTask] = useState(null) 
     useEffect(() => {
         const fetchDashboard = async () => {
@@ -20,12 +19,6 @@ const Dashboard = () => {
             }
         }
         fetchDashboard()
-    }, [])
-
-    useEffect(() => {
-        const close = () => setOpenMenu(null)
-        document.addEventListener("click", close)
-        return () => document.removeEventListener("click", close)
     }, [])
 
     const handleDelete = async (id) => {
@@ -64,7 +57,7 @@ const Dashboard = () => {
                 </div>
             </div>
 
-            {/* {error && <p className="error">{error}</p>} */}
+            {error && <p className="error">{error}</p>}
 
             <div className="task-table-head">
                 <span>Title</span>
@@ -85,14 +78,14 @@ const Dashboard = () => {
                         <span className="task-author">@{bug.createdby}</span>
                     </li>
                 ))}
-                {dashboard.length === 0 && !error && (
+                {dashboard.length === 0 && (
                     <div className="empty-state">No tasks yet — click Add Task to create one</div>
                 )}
             </ul>
 
             {selectedTask && (
                 <div className="modal-overlay" onClick={() => setSelectedTask(null)}>
-                    <div className="modal" onClick={(e) => e.stopPropagation()}>
+                    <div className="modal" onClick={(e) => e.stopPropagation()} >
                         <button className="modal-close" onClick={() => setSelectedTask(null)}>✕</button>
 
                         <div className="modal-header">

@@ -1,6 +1,6 @@
 import ax from "axios";
 
-const API = ax.create({
+export const API = ax.create({
     baseURL: "http://localhost:3000/api/auth",
     withCredentials: true,
 })
@@ -51,6 +51,5 @@ API.interceptors.response.use(
     }
 );
 
-export default API
 
-
+export default API;
