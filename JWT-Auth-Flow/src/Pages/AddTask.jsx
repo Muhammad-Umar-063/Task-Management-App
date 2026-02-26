@@ -17,6 +17,7 @@ const AddTask = () => {
         } catch (err) {
             console.log(err)
             alert(err.response?.data?.message || "Failed to add task")
+
         }
     }
 
@@ -42,7 +43,7 @@ const AddTask = () => {
 
             <select onChange={(e) => setstatus(e.target.value)}>
                 <option value="Active">Active</option>
-                <option value="in_progress">In Progress</option>
+                <option value="In_Progress">In Progress</option>
                 <option value="Resolved">Resolved</option>
             </select>
 
