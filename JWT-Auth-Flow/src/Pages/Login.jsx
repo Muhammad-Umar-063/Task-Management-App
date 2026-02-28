@@ -24,6 +24,8 @@ const Login = () => {
         navigate("/register")
     }
     return (
+        <>
+        <title>Login</title>
         <div className="login">
             <h2>Login</h2>
             <input type="text" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
@@ -31,6 +33,7 @@ const Login = () => {
             <button onClick={handleLogin}>Login</button>
             <button onClick={signup}>Go to Sign Up</button>
         </div>
+        </>
     )
 }
 export default Login

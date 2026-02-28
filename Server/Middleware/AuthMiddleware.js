@@ -11,8 +11,11 @@ function AuthenticateToken(req, res, next) {
     req.user = user;
     next();
   } catch (err) {
-    return res.status(401).json({ message: "Invalid access token" });
-  }
+    if (err.name === "TokenExpiredError") {
+        return res.status(401).json({ message: "Access token expired" })
+    }
+    return res.status(498).json({ message: "Invalid access token" })
+}
 }
 
 function AuthorizeRole(role) {

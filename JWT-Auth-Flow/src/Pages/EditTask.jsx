@@ -14,7 +14,7 @@ const EditTask = () => {
         const fetchTask = async () => {
             try{
                 const res = await API.get(`/task/${id}`)
-                const task = res.data.task
+                const task = res.data
 
                 settitle(task.title)
                 setdes(task.description || "")
@@ -40,6 +40,8 @@ const EditTask = () => {
     }
 
     return (
+        <>
+        <title>Edit Task</title>
         <div className="add">
             <input
                 type="text"
@@ -63,7 +65,7 @@ const EditTask = () => {
 
             <select value={status} onChange={(e) => setstatus(e.target.value)}>
                 <option value="Active">Active</option>
-                <option value="In Progress">In Progress</option>
+                <option value="In_Progress">In Progress</option>
                 <option value="Resolved">Resolved</option>
             </select>
 
@@ -72,6 +74,7 @@ const EditTask = () => {
                 navigate("/dashboard")
             }}>Cancel</button>
         </div>
+        </>
     )
 }
 

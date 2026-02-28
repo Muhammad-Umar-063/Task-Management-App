@@ -7,6 +7,7 @@ const logout = () => {
         try{
             await API.post("/logout")
             localStorage.removeItem("accesstoken")
+            localStorage.removeItem("activeSession")
             navigate("/")
         }catch(err){
             console.log(err)
@@ -14,10 +15,13 @@ const logout = () => {
         }
 }       
     return(
+        <>
+        <title>Logout</title>
         <div className="logout">
             <h2>Logout</h2>
             <button onClick={handleLogout}>Logout</button>
         </div>  
+        </>
     )
 }
 export default logout;

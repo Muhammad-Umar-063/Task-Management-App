@@ -25,15 +25,14 @@ API.interceptors.response.use(
         return Promise.reject(error);
         }
 
-        if (originalRequest.url === "/refresh") {
-            localStorage.removeItem("accesstoken")
-            window.location.href = "/";
-            return Promise.reject(error);
+        if (error.response?.status === 498) {
+            localStorage.removeItem("accesstoken") 
+            await API.post("/logout")   
+            window.location.href = "/"
+            return Promise.reject(error)
         }
-
         if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
-
             try {
                 const res = await API.post("/refresh");
 

@@ -35,7 +35,6 @@ function App() {
         <Route path="/logout" element={
           <ProtectedRoute><Logout /></ProtectedRoute>
         } />
-
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>

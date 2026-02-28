@@ -33,6 +33,8 @@ const SignUp = () => {
     }
 
     return (
+        <>
+        <title>Sign Up</title>
         <div className="signup">
             <h2>Sign Up</h2>
             <input type="text" placeholder="Username" onChange={(e) => setUsername(e.target.value)} />
@@ -57,6 +59,7 @@ const SignUp = () => {
             <button onClick={handleSignUp}>Sign Up</button>
             <button onClick={() => navigate("/")}>Go to Login</button>
         </div>
+        </>
     )
 }
 

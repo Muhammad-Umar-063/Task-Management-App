@@ -14,8 +14,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@prisma/client": "^7.4.1",
     "@prisma/adapter-mariadb": "^7.4.1",
+    "@prisma/client": "^7.4.1",
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.3",
     "cookie": "^1.1.1",
@@ -24,6 +24,7 @@
     "express": "^5.2.1",
     "interceptors": "^1.0.2",
     "jsonwebtoken": "^9.0.3",
+    "jwt-decode": "^4.0.0",
     "mysql2": "^3.17.2",
     "tsc": "^2.0.4"
   },

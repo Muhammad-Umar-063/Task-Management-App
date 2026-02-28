@@ -23,6 +23,7 @@ const Admin = () => {
     }, [])
     return (
         <>
+        <title>Admin</title>
         <div className="admin">
             <h1>Admin Page</h1>
             <h3>Hello {message.username}</h3>

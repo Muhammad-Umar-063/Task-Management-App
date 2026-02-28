@@ -4,8 +4,9 @@ const ProtectedRoute = ({ children }) => {
     const token = localStorage.getItem("accesstoken");
 
     if (!token) {
-        return <Navigate to="/" />;  
+        Navigate("/")
     }
+    
 
     return children;
 }
