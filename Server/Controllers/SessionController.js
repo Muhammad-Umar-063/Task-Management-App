@@ -2,13 +2,12 @@ import prisma from "../Config/Prisma.js"
 
 const createSession = async (req , res) => {
     const {name} = req.body
-    const createdby = req.user.username
     if (!name) {
         return res.status(400).json({message : "Session Name Required!"})
     }
     try{
         const session = await prisma.session.create({
-            data : {name, createdby}
+            data : {name, userId: req.user.id}
         })
         return res.status(201).json({message : "Session Created", session})
     }catch(err){
@@ -17,10 +16,9 @@ const createSession = async (req , res) => {
 }
 
 const getSessions = async(req, res) => {
-    const createdby = req.user.username
     try{
         const sessions = await prisma.session.findMany({
-            where : {createdby},
+            where : {userId: req.user.id},
             orderBy: { createdat: "desc" }
         })
         return res.status(200).json({sessions})

@@ -116,7 +116,7 @@ const Dashboard = () => {
         }
     }
 
-    const canModify = (task) => role === "admin" || username === task.createdby
+    const canModify = (task) => role === "admin" || role === "user"
 
     return (
         <>

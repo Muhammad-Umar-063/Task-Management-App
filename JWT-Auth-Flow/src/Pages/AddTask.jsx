@@ -76,7 +76,7 @@ const AddTask = () => {
         try {
             await API.post("/tasks", { title, description, priority, status, sessionId })
             alert("Task added")
-            navigate("/dashboard")
+            navigate(sessionId ? `/dashboard?sessionId=${sessionId}` : "/dashboard")
         } catch (err) {
             alert(err.response?.data?.message || "Failed to add task")
         }
