@@ -1,0 +1,194 @@
+.admin-stats {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  color: #e0e0e0;
+}
+
+/* ── Nav ── */
+.stats-nav {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.stats-nav button {
+  padding: 10px 20px;
+  border: none;
+  background: #6c63ff;
+  color: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  width: 100%;
+  transition: background 0.2s;
+}
+
+.stats-nav button:hover {
+  background: #5a52e0;
+}
+
+.admin-stats h1 {
+  font-size: 24px;
+  margin-bottom: 24px;
+  color: #6c63ff;
+  text-align: center;
+}
+
+.admin-stats h2 {
+  color: #6c63ff;
+  text-align: center;
+}
+
+/* ── Summary Cards ── */
+.stats-cards {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.stat-card {
+  flex: 1;
+  min-width: 140px;
+  padding: 20px;
+  border: 1px solid #3a3a3a;
+  border-radius: 10px;
+  background: #2a2a2a;
+  text-align: center;
+}
+
+.stat-card h3 {
+  font-size: 32px;
+  margin: 0 0 4px;
+  color: #6c63ff;
+}
+
+.stat-card p {
+  font-size: 13px;
+  color: #aaa;
+  margin: 0;
+}
+
+/* ── Group Breakdown ── */
+.group-stat-card {
+  border: 1px solid #3a3a3a;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 16px;
+  background: #2a2a2a;
+}
+
+.group-stat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.group-stat-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #e0e0e0;
+}
+
+.member-count {
+  font-size: 13px;
+  color: #ccc;
+  background: #3a3a3a;
+  padding: 2px 10px;
+  border-radius: 12px;
+}
+
+/* ── Group Stat Rows ── */
+.group-stat-row {
+  display: flex;
+  gap: 8px;
+  padding: 6px 0;
+  font-size: 13px;
+  border-bottom: 1px solid #333;
+}
+
+.group-stat-row:last-of-type {
+  border-bottom: none;
+}
+
+.group-stat-label {
+  color: #aaa;
+  min-width: 110px;
+  font-weight: 600;
+}
+
+.group-stat-value {
+  color: #e0e0e0;
+}
+
+/* ── Badges ── */
+.badge {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.badge-owner {
+  background: rgba(108, 99, 255, 0.2);
+  color: #a9a2ff;
+}
+
+.badge-you {
+  color: #6c63ff;
+  font-weight: 600;
+}
+
+/* ── Member Sections ── */
+.member-section {
+  margin-top: 12px;
+}
+
+.member-section h4 {
+  font-size: 14px;
+  margin: 0 0 6px;
+  color: #aaa;
+}
+
+.member-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.member-section li {
+  font-size: 13px;
+  background: #3a3a3a;
+  color: #e0e0e0;
+  padding: 4px 12px;
+  border-radius: 14px;
+}
+
+.empty-text {
+  color: #777;
+  font-size: 14px;
+  margin: 8px 0;
+}
+
+/* ── View Group Button ── */
+.view-group-btn {
+  margin-top: 14px;
+  padding: 8px 16px;
+  font-size: 13px;
+  background: #6c63ff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.2s;
+}
+
+.view-group-btn:hover {
+  background: #5a52e0;
+}

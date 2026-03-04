@@ -7,35 +7,63 @@ datasource db {
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
-  username String
-  email    String    @unique
-  password String
-  role     String    @default("user")
-  tasks    Task[]
-  sessions Session[]
+  id            Int           @id @default(autoincrement())
+  username      String
+  email         String        @unique
+  password      String
+  role          Role          @default(user)
+  groupMembers  GroupMember[]
+  assignedTasks Task[]        @relation("AssignedTasks")
+  createdTasks  Task[]        @relation("CreatedTasks")
+  createdGroups Group[]
 }
 
-model Session {
-  id        Int      @id @default(autoincrement())
-  name      String
-  createdat DateTime @default(now())
-  tasks     Task[]
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    Int 
+model Group {
+  id          Int           @id @default(autoincrement())
+  name        String
+  createdat   DateTime      @default(now())
+  createdBy   User          @relation(fields: [createdById], references: [id])
+  createdById Int
+  members     GroupMember[]
+  tasks       Task[]
+}
+
+model GroupMember {
+  id       Int       @id @default(autoincrement())
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId   Int
+  group    Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId  Int
+  role     GroupRole @default(user)
+  joinedAt DateTime  @default(now())
+
+  @@unique([userId, groupId])
 }
 
 model Task {
-  id          Int       @id @default(autoincrement())
-  title       String
-  description String?
-  priority    Priority  @default(Medium)
-  status      Status    @default(Active)
-  createdat   DateTime  @default(now())
-  session     Session?  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  sessionId   Int?
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      Int
+  id           Int      @id @default(autoincrement())
+  title        String
+  description  String?
+  priority     Priority @default(Medium)
+  status       Status   @default(Active)
+  createdat    DateTime @default(now())
+  group        Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId      Int
+  assignedTo   User     @relation("AssignedTasks", fields: [assignedToId], references: [id])
+  assignedToId Int
+  createdBy    User     @relation("CreatedTasks", fields: [createdById], references: [id])
+  createdById  Int
+}
+
+enum Role {
+  superadmin
+  admin
+  user
+}
+
+enum GroupRole {
+  admin
+  user
 }
 
 enum Priority {

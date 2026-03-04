@@ -5,9 +5,8 @@ const logout = () => {
     const navigate = useNavigate()
     const handleLogout = async() => {
         try{
-            await API.post("/logout")
-            localStorage.removeItem("accesstoken")
-            localStorage.removeItem("activeSession")
+await API.post("/auth/logout")
+localStorage.removeItem("accesstoken") 
             navigate("/")
         }catch(err){
             console.log(err)

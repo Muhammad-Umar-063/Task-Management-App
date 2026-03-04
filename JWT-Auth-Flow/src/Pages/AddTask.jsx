@@ -1,106 +1,119 @@
-// import { useState } from "react";
-// import { useNavigate } from "react-router-dom";
-// import API from "../Api/axios";
-
-// const AddTask = () => {
-//     const navigate = useNavigate()
-//     const [title, settitle] = useState("")
-//     const [description, setdes] = useState("")
-//     const [priority, setpriority] = useState("Medium")  
-//     const [status, setstatus] = useState("Active")      
-
-//     const handletask = async () => {
-//         try {
-//             await API.post("/tasks", { title, description, priority, status })
-//             alert("Task added")
-//             navigate("/dashboard")
-//         } catch (err) {
-//             console.log(err)
-//             alert(err.response?.data?.message || "Failed to add task")
-
-//         }
-//     }
-
-//     return (
-//         <>
-//         <title>Add Task</title>
-//         <div className="add">
-//             <input
-//                 type="text"
-//                 placeholder="Add Title"
-//                 onChange={(e) => settitle(e.target.value)}  
-//             />
-//             <input
-//                 type="text"
-//                 placeholder="Description"
-//                 onChange={(e) => setdes(e.target.value)}  
-//             />
-
-//             <select onChange={(e) => setpriority(e.target.value)}>
-//                 <option value="Medium">Medium</option>
-//                 <option value="Low">Low</option>
-//                 <option value="High">High</option>
-//                 <option value="Urgent">Urgent</option>
-//             </select>
-
-//             <select onChange={(e) => setstatus(e.target.value)}>
-//                 <option value="Active">Active</option>
-//                 <option value="In_Progress">In Progress</option>
-//                 <option value="Resolved">Resolved</option>
-//             </select>
-
-//             <button onClick={handletask}>Add Task</button>
-//         </div>
-//         </>
-//     )
-// }
-
-// export default AddTask;
-
-
-
-import { useState } from "react"
-import { useNavigate, useLocation } from "react-router-dom"
+import { useState, useEffect } from "react"
+import { useNavigate, useParams, useLocation } from "react-router-dom"
 import API from "../Api/axios"
 
 const AddTask = () => {
     const navigate = useNavigate()
+    const { groupId } = useParams()
     const location = useLocation()
-    const sessionId = location.state?.sessionId || null
-    const [title, settitle] = useState("")
-    const [description, setdes] = useState("")
-    const [priority, setpriority] = useState("Medium")
-    const [status, setstatus] = useState("Active")
+    const fromSuperAdmin = location.state?.from === "superadmin"
 
-    const handletask = async () => {
+    const [members, setMembers] = useState([])
+    const [form, setForm] = useState({
+        title: "",
+        description: "",
+        priority: "Medium",
+        status: "Active",
+        assignedToId: "",
+    })
+    const [error, setError] = useState("")
+
+    // ── Fetch group members ──
+    useEffect(() => {
+        const fetchMembers = async () => {
+            try {
+                const { data } = await API.get(`/groups/${groupId}`)
+                const groupMembers = data.group.members
+                setMembers(groupMembers)
+
+                // Auto-assign first member
+                if (groupMembers.length > 0) {
+                    setForm((prev) => ({ ...prev, assignedToId: groupMembers[0].userId }))
+                }
+            } catch {
+                setError("Failed to load group members")
+            }
+        }
+
+        fetchMembers()
+    }, [groupId])
+
+    // ── Helpers ──
+    const updateField = (field) => (e) =>
+        setForm((prev) => ({ ...prev, [field]: e.target.value }))
+
+    const backPath = fromSuperAdmin
+        ? `/superadmin/groups/${groupId}`
+        : `/groups/${groupId}`
+
+    // ── Submit handler ──
+    const handleSubmit = async () => {
+        // Validation
+        if (!form.title.trim()) {
+            return setError("Title is required")
+        }
+        if (!form.assignedToId) {
+            return setError("Select a member to assign the task")
+        }
+
         try {
-            await API.post("/tasks", { title, description, priority, status, sessionId })
-            alert("Task added")
-            navigate(sessionId ? `/dashboard?sessionId=${sessionId}` : "/dashboard")
+            await API.post(`/groups/${groupId}/tasks`, {
+                title: form.title.trim(),
+                description: form.description,
+                priority: form.priority,
+                status: form.status,
+                assignedToId: Number(form.assignedToId),
+            })
+            navigate(backPath)
         } catch (err) {
-            alert(err.response?.data?.message || "Failed to add task")
+            setError(err.response?.data?.message || "Failed to create task")
         }
     }
 
     return (
         <>
-        <title>Add Task</title>
-        <div className="add">
-            <input type="text" placeholder="Add Title" onChange={(e) => settitle(e.target.value)} />
-            <input type="text" placeholder="Description" onChange={(e) => setdes(e.target.value)} />
-            <select onChange={(e) => setpriority(e.target.value)}>
-                <option value="Medium">Medium</option>
-                <option value="Low">Low</option>
-                <option value="High">High</option>
-                <option value="Urgent">Urgent</option>
-            </select>
-            <select onChange={(e) => setstatus(e.target.value)}>
-                <option value="Active">Active</option>
-                <option value="In_Progress">In Progress</option>
-                <option value="Resolved">Resolved</option>
-            </select>
-            <button onClick={handletask}>Add Task</button>
-        </div>
+            <title>Add Task</title>
+            <div className="add">
+                <h2>Add Task</h2>
+                {error && <p className="error">{error}</p>}
+
+                <input
+                    type="text"
+                    placeholder="Title"
+                    value={form.title}
+                    onChange={updateField("title")}
+                />
+                <input
+                    type="text"
+                    placeholder="Description"
+                    value={form.description}
+                    onChange={updateField("description")}
+                />
+
+                <select value={form.priority} onChange={updateField("priority")}>
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+                    <option value="Urgent">Urgent</option>
+                </select>
+
+                <select value={form.status} onChange={updateField("status")}>
+                    <option value="Active">Active</option>
+                    <option value="In_Progress">In Progress</option>
+                    <option value="Resolved">Resolved</option>
+                </select>
+
+                <select value={form.assignedToId} onChange={updateField("assignedToId")}>
+                    <option value="">Assign to...</option>
+                    {members.map((m) => (
+                        <option key={m.userId} value={m.userId}>
+                            @{m.user.username} — {m.role}
+                        </option>
+                    ))}
+                </select>
+                <button onClick={handleSubmit}>Add Task</button>
+                <button onClick={() => navigate(backPath)}>Cancel</button>
+            </div>
         </>
     )
 }
