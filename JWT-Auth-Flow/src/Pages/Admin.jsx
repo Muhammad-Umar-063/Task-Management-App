@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import API, { getMyId, getMyRole } from "../Api/axios"
+import { jwtDecode } from "jwt-decode"
 import "./admin-stats.css"
 
 const Admin = () => {
@@ -12,32 +13,42 @@ const Admin = () => {
     const [totalTasks, setTotalTasks] = useState(0)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState("")
+    const [username, setUsername] = useState("")
 
     useEffect(() => {
+        // Get username from token
+        const token = localStorage.getItem("accesstoken")
+        if (token) {
+            try {
+                const decoded = jwtDecode(token)
+                setUsername(decoded.username)
+            } catch {}
+        }
+
         const fetchStats = async () => {
             try {
-                const { data } = await API.get("/groups")
-                const groupList = data.groups || []
+                // Step 1: get list of groups
+                const res = await API.get("/groups")
+                const groupList = res.data.groups || []
 
-                // Fetch each group's full details (with members + tasks)
+                // Step 2: get full details for each group
                 let taskCount = 0
-                const detailed = await Promise.all(
-                    groupList.map(async (g) => {
-                        try {
-                            const { data: gData } = await API.get(`/groups/${g.id}`)
-                            // Count tasks per group
-                            try {
-                                const { data: tData } = await API.get(`/groups/${g.id}/tasks`)
-                                taskCount += (tData.tasks || []).length
-                            } catch { /* ignore */ }
-                            return gData.group
-                        } catch {
-                            return { ...g, members: [] }
-                        }
-                    })
-                )
+                const detailedGroups = []
 
-                setGroups(detailed)
+                for (const g of groupList) {
+                    const groupRes = await API.get(`/groups/${g.id}`)
+                    detailedGroups.push(groupRes.data.group)
+
+                    // Step 3: count tasks in each group
+                    try {
+                        const taskRes = await API.get(`/groups/${g.id}/tasks`)
+                        taskCount += taskRes.data.tasks?.length || 0
+                    } catch {
+                        // ignore if tasks fail
+                    }
+                }
+
+                setGroups(detailedGroups)
                 setTotalTasks(taskCount)
             } catch {
                 setError("Failed to load stats")
@@ -45,6 +56,7 @@ const Admin = () => {
                 setLoading(false)
             }
         }
+
         fetchStats()
     }, [])
 
@@ -56,28 +68,30 @@ const Admin = () => {
         </div>
     )
 
-    // ── Derived stats ──
-    const allMembers = groups.flatMap(g =>
-        (g.members || []).map(m => ({ ...m, groupName: g.name, groupId: g.id }))
-    )
+    // ── Count unique admins across all groups ──
+    const adminIds = new Set()
+    const userIds = new Set()
 
-    const uniqueAdmins = [...new Map(
-        allMembers.filter(m => m.role === "admin").map(m => [m.userId, m])
-    ).values()]
+    for (const group of groups) {
+        for (const member of group.members || []) {
+            if (member.role === "admin") adminIds.add(member.userId)
+            if (member.role === "member") userIds.add(member.userId)
+        }
+    }
 
-    const uniqueUsers = [...new Map(
-        allMembers.filter(m => m.role === "member").map(m => [m.userId, m])
-    ).values()]
-
-    // ── Admin-specific ──
+    // ── Groups the current admin is part of ──
     const myGroups = groups.filter(g =>
         (g.members || []).some(m => m.userId === myId)
     )
-    const groupsICreated = groups.filter(g =>
-        g.createdById === myId || g.createdBy?.id === myId
+
+    // ── Groups where I am an admin = "created/own" ──
+    const groupsICreated = myGroups.filter(g =>
+        (g.members || []).some(m => m.userId === myId && m.role === "admin")
     )
+
+    // ── Groups where I am just a member ──
     const groupsIJoined = myGroups.filter(g =>
-        g.createdById !== myId && g.createdBy?.id !== myId
+        (g.members || []).some(m => m.userId === myId && m.role === "member")
     )
 
     const displayGroups = myRole === "superadmin" ? groups : myGroups
@@ -95,6 +109,9 @@ const Admin = () => {
                 </div>
 
                 <h1>{myRole === "superadmin" ? "Super Admin Overview" : "Admin Overview"}</h1>
+                <p style={{ color: "var(--text-2)", fontSize: "13px", textAlign: "center", marginTop: "-16px", marginBottom: "20px" }}>
+                    @{username}
+                </p>
 
                 {/* ── Summary Cards ── */}
                 <div className="stats-cards">
@@ -106,11 +123,11 @@ const Admin = () => {
                     {myRole === "superadmin" ? (
                         <>
                             <div className="stat-card">
-                                <h3>{uniqueAdmins.length}</h3>
+                                <h3>{adminIds.size}</h3>
                                 <p>Total Admins</p>
                             </div>
                             <div className="stat-card">
-                                <h3>{uniqueUsers.length}</h3>
+                                <h3>{userIds.size}</h3>
                                 <p>Total Users</p>
                             </div>
                             <div className="stat-card">
@@ -185,4 +202,5 @@ const Admin = () => {
 }
 
 export default Admin
+
 

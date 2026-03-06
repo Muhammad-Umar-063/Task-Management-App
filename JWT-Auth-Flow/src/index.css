@@ -177,6 +177,18 @@ button + button:hover { background: rgba(255,255,255,0.06); color: var(--text); 
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
 
+.dash-header > div > p {
+    margin: 0;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* Add this after .dash-header h2 */
+.dash-header > div > p {
+    margin: 0;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* ...existing code... */
 .dash-header-btns { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .dash-header-btns button { width: auto; margin: 0; padding: 9px 18px; font-size: 13px; border-radius: 10px; white-space: nowrap; }
 

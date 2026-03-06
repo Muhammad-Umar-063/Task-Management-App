@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
-import API from "../Api/axios"
+import API, { getMyRole } from "../Api/axios"
+import { jwtDecode } from "jwt-decode"
 
 const SuperAdminDashboard = () => {
     const navigate = useNavigate()
@@ -8,8 +9,18 @@ const SuperAdminDashboard = () => {
     const [error, setError]           = useState("")
     const [showCreate, setShowCreate] = useState(false)
     const [form, setForm]             = useState({ name: "", email: "" })
+    const [username, setUsername]     = useState("")
 
     useEffect(() => {
+        // Get username from token
+        const token = localStorage.getItem("accesstoken")
+        if (token) {
+            try {
+                const decoded = jwtDecode(token)
+                setUsername(decoded.username)
+            } catch {}
+        }
+
         API.get("/groups")
             .then(res => setGroups(res.data.groups))
             .catch(() => setError("Failed to load groups"))
@@ -50,7 +61,12 @@ const SuperAdminDashboard = () => {
             <div className="dashboard-wrapper">
                 <div className="dashboard">
                     <div className="dash-header">
-                        <h2>All Groups</h2>
+                        <div>
+                            <h2>All Groups</h2>
+                            <p style={{ color: "var(--text-2)", fontSize: "13px", marginTop: "4px" }}>
+                                Welcome, @{username}
+                            </p>
+                        </div>
                         <div className="dash-header-btns">
                             <button className="btn-add" onClick={() => setShowCreate(!showCreate)}>+ New Group</button>
                             <button className="btn-logout" onClick={handleLogout}>→ Logout</button>
